@@ -2,6 +2,7 @@ import pygame
 import math
 from pygame.locals import *
 from pygame import mixer
+import maps
 
 #* Inicjalizacja PyGame
 pygame.init()
@@ -10,7 +11,7 @@ pygame.init()
 bg = pygame.image.load("background_1.png")
 player = pygame.image.load("ball.png")
 display = pygame.display.set_mode((800, 800))
-blocks = [[pygame.image.load("block.png"), 400, 300], [pygame.image.load("block.png"), 400, 500], [pygame.image.load("block.png"), 500, 200]]
+blocks = [[pygame.image.load("block.png"), 400, 300], [pygame.image.load("block.png"), 400, 500], [pygame.image.load("block.png"), 500, 200], [pygame.image.load("block.png"), 220, 100]]
 player_x = 400
 player_y = 600
 vel_x = 5
@@ -96,7 +97,7 @@ while run:
         #? Główna pętla gry
         #? można ją zakończyć zmieniając zmienną run = False
     '''
-
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
