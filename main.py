@@ -46,6 +46,7 @@ def get_angle(mouse_start, mouse_end):
         #! "L" i "R" oznaczające left i right
         #! "U" i "D" oznaczające up i down
     '''
+
     side_a = int(math.fabs(mouse_end[0] - mouse_start[0]))
     side_b = int(math.fabs(mouse_end[1] - mouse_start[1]))
     if mouse_end[0]<mouse_start[0]:
@@ -65,6 +66,7 @@ def get_direction(mouse_start, mouse_end):
         #! mouse_end -> koordynaty myszki w momęcie puszczenia myszki
         #? Funkcja zwraca tupla zawierającego ilość pikseli do pokonania w osi x oraz osi y dla obliczonego kąta
     '''
+
     angle = get_angle(mouse_start, mouse_end)
     if angle[1] == "LU":
         return math.cos(angle[0]), math.sin(angle[0])
@@ -81,6 +83,7 @@ while run:
         #? Główna pętla gry
         #? można ją zakończyć zmieniając zmienną run = False
     '''
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -109,12 +112,16 @@ while run:
     #* Granice pola golfowego 
     if player_x<220:
         direction_x*=-1
+        player_x = 220
     if player_x>595:
         direction_x*=-1
+        player_x = 595
     if player_y<63:
         direction_y*=-1
+        player_y = 63
     if player_y>652:
         direction_y*=-1
+        player_y = 652
 
     draw_objects()
 
