@@ -10,12 +10,23 @@ pygame.init()
 bg = pygame.image.load("background_1.png")
 player = pygame.image.load("ball.png")
 display = pygame.display.set_mode((800, 800))
+blocks = [[pygame.image.load("block.png"), 400, 300], [pygame.image.load("block.png"), 400, 500], [pygame.image.load("block.png"), 500, 200]]
 player_x = 400
 player_y = 600
 vel_x = 5
 vel_y = 5
 moving = False
 friction = 0.98
+map = 1
+
+def is_in_block(x, y):
+    '''
+        #? Funckaj przyjmuje jako argumenty player_x oraz player_y
+        #? Funkcja zwraca dystans pomiędzy tymi dwoma punktami bez zaokrąglania
+    '''
+    for block in blocks:
+        if x < block[1] + 50 and x+ 35 > block[1] and y < block[2] + 50 and y + 35 > block[2]:
+            return True
 
 def draw_objects():
     '''
@@ -24,6 +35,8 @@ def draw_objects():
     '''
     display.blit(bg, (0, 0))
     display.blit(player, (player_x, player_y))
+    for block in blocks:
+        display.blit(block[0], (block[1], block[2]))
 
     pygame.display.update()
 
@@ -93,7 +106,10 @@ while run:
         if event.type == pygame.MOUSEBUTTONUP and mouse_down and not moving:
             mouse_end = pygame.mouse.get_pos()
             dist = (int(round(get_distance(mouse_start, mouse_end), 0))/15)
-            power = dist
+            if dist > 20:
+                power = 20
+            else:
+                power = dist
             direction = get_direction(mouse_start, mouse_end)
             direction_x = direction[0]
             direction_y = direction[1]
@@ -109,20 +125,30 @@ while run:
         if power<0.1:
             moving = False
 
-    #* Granice pola golfowego 
-    if player_x<220:
-        direction_x*=-1
-        player_x = 220
-    if player_x>595:
-        direction_x*=-1
-        player_x = 595
-    if player_y<63:
-        direction_y*=-1
-        player_y = 63
-    if player_y>652:
-        direction_y*=-1
-        player_y = 652
+    #* Granice pola golfowego (średniowiecze)
+    if map == 1:
+        if player_x<220:
+            direction_x*=-1
+            player_x = 220
+        if player_x>603:
+            direction_x*=-1
+            player_x = 603
+        if player_y<55:
+            direction_y*=-1
+            player_y = 55
+        if player_y>664:
+            direction_y*=-1
+            player_y = 664
+    else:
+        #todo: Tutaj będą granice pola golfowego dla mapy cyberpunkowej
+        pass
 
+    #* Kolizje z blokami postawionymi na mapie
+    if moving and is_in_block(player_x + direction_x*power, player_y):
+        direction_x *=-1
+    if moving and is_in_block(player_x, player_y + direction_y*power):
+        direction_y *=-1
+        
     draw_objects()
 
 pygame.quit()
