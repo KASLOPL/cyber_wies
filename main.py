@@ -7,27 +7,24 @@ import maps
 #* Inicjalizacja PyGame
 pygame.init()
 
-#* Zmienne globalne
-bg = pygame.image.load("background_1.png")
-player = pygame.image.load("ball.png")
-hole = pygame.image.load("hole.png")
-arrow = pygame.image.load("arrow.png")
+bg = pygame.image.load("background_1.png") # Ładowanie backgroundu
+player = pygame.image.load("ball.png") # Ładowanie piłeczki
+hole = pygame.image.load("hole.png") # Ładowanie dołeczka
+arrow = pygame.image.load("arrow.png") # Ładowanie strzałki
 arrow_rect = arrow.get_rect()
-display = pygame.display.set_mode((800, 800))
-lvl = 1
-blocks_1 , blocks_2, player_cords, hole_cords, where_hole = maps.map(lvl)
-current = blocks_1
-player_x, player_y = player_cords
-hole_x, hole_y = hole_cords
-vel_x = 5
-vel_y = 5
-moving = False
-friction = 0.98
-world = 1
-mouse_down = False
-angle = 0
-space = False
-cool_down = 0
+display = pygame.display.set_mode((800, 800)) # Ustawienie wymiarów ekranu
+lvl = 1 # Ustawienie levela na 1
+blocks_1 , blocks_2, player_cords, hole_cords, where_hole = maps.map(lvl) # Pobieranie informacji o mapie
+current = blocks_1 # Ustawienie aktualnie wyświetlanych bloków
+player_x, player_y = player_cords # Ustawienie początkowej pozycji gracza na podstawie danych pobranych z pliku "maps"
+hole_x, hole_y = hole_cords # Ustawienie pozycji dołka na podstawie danych pobranych z pliku "maps"
+moving = False # Deklarowania flagi mówącej czy piłeczka się porusza
+friction = 0.98 # Stała oznaczająca wartośc tarcia
+world = 1 # Początkowe ustawienie wymiaru w którym znajduje się gracz
+mouse_down = False # Flaga oznaczająca to czy lewy przycisk myszy jest wciśnięty
+angle = 0 # Kąt pod którym ma się wyświetlać strzałka
+space = False # Flaga oznaczająza czy spacja jest wciśnięta
+cool_down = 0 # Wartość cool downu
 
 def is_in_block(x, y):
     '''
@@ -144,6 +141,7 @@ while run:
     #* Poruszanie się piłeczki 
     #* oraz prosta symulacja tarcia
     if moving:
+        mouse_down = False
         player_x += direction_x * power
         player_y += direction_y * power
         power *= friction
@@ -189,17 +187,20 @@ while run:
         if get_distance([hole_x+20, hole_y+20], [player_x+17, player_y+17]) < 18:
             moving = False
             lvl += 1
-            blocks_1 , blocks_2, player_cords, hole_cords = maps.map(lvl)
-            player_x = 400
-            player_y = 600
+            blocks_1 , blocks_2, player_cords, hole_cords, where_hole = maps.map(lvl)
+            current = blocks_1
+            player_x = player_cords[0]
+            player_y = player_cords[1]
     if world == 2 and where_hole == "cyber":
         if get_distance([hole_x+20, hole_y+20], [player_x+17, player_y+17]) < 18:
             moving = False
             lvl += 1
-            blocks_1 , blocks_2, player_cords, hole_cords = maps.map(lvl)
-            player_x = 400
-            player_y = 600
+            blocks_1 , blocks_2, player_cords, hole_cords, where_hole = maps.map(lvl)
+            current = blocks_1
+            player_x = player_cords[0]
+            player_y = player_cords[1]
     
+    #* Przemieszczanie się między wymiarami
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE] and not space and not moving:
         space = True
@@ -214,6 +215,8 @@ while run:
             current = blocks_1
             bg = pygame.image.load("background_1.png")
             hole = pygame.image.load("hole.png")
+        while is_in_block(player_x, player_y):
+            player_y += 10
     
     if cool_down > 0:
         cool_down -= 1
